@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой проект с картой и геолокацией</title>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=ВАШ_API_КЛЮЧ&lang=ru_RU" type="text/javascript"></script>
+</head>
+<body>
+
+<h1>Мой проект с картой и геолокацией</h1>
+
+<div id="map" style="width: 100%; height: 400px;"></div>
+
+<script>
+    ymaps.ready(init);
+
+    function init() {
+        var myMap = new ymaps.Map('map', {
+            center: [55.753994, 37.622093], // координаты центра карты
+            zoom: 9 // уровень масштабирования
+        });
+
+        // Добавление метки на карту
+        var myPlacemark = new ymaps.Placemark([55.753994, 37.622093], {
+            hintContent: 'Место на карте',
+            balloonContent: 'Дополнительная информация'
+        });
+
+        myMap.geoObjects.add(myPlacemark);
+
+        // Отслеживание местоположения устройства
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                // Создание метки для текущего местоположения
+                var userPlacemark = new ymaps.Placemark([latitude, longitude], {
+                    hintContent: 'Ваше текущее местоположение',
+                    balloonContent: 'Вы здесь!'
+                });
+
+                myMap.geoObjects.add(userPlacemark);
+
+                // Центрирование карты по текущему местоположению пользователя
+                myMap.setCenter([latitude, longitude]);
+            }, function(error) {
+                console.error('Ошибка при получении местоположения:', error.message);
+            });
+        } else {
+            console.error('Геолокация не поддерживается вашим браузером');
+        }
+    }
+</script>
+
+</body>
+</html>
